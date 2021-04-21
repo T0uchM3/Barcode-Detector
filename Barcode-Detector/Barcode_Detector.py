@@ -23,3 +23,4 @@ image = cv2.imread("img2.jpg")
 #barcode = zbar.decode(Image.open("img2.png"))
 barcode = zbar.decode(image)
 print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
+
