@@ -462,7 +462,7 @@ padding: 10px;
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="DragBar" name="DragBar" native="true">
+        <widget class="QWidget" name="DragBar" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="topMargin">
            <number>8</number>
@@ -581,14 +581,6 @@ padding: 10px;
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>DragBar</class>
-   <extends>QWidget</extends>
-   <header>dragbar.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
