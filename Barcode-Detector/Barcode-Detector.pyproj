@@ -5,8 +5,7 @@
     <ProjectGuid>16c8dee5-6b5a-4c71-aa07-5b6d12481f7e</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>guiTest.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\Barcode-Detector</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Barcode-Detector</Name>
