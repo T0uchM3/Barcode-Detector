@@ -15,8 +15,10 @@ import numpy as np
 
 class MainWidget(QWidget):   
     imageList=[]
-    #codeList=[]
+    codeList=[]
     noneInside = True
+    vidIsOpen = False
+
     #mapSingnal = Signal(np.ndarray)
     def __init__(self):
         QWidget.__init__(self)
@@ -31,22 +33,11 @@ class MainWidget(QWidget):
         self.ui = loader.load(designer_file, self)
         self.center()#position the window in the center
         
-        #global codeList
-        self.codeList = []
-        #global imageList
-        #self.imageList = QtGui.QDrag(self)
 
-        #w = QtWidgets.QDialog()
-        #w.setSizeGripEnabled(True)
         self.ui.closeButton.clicked.connect(self.closeEvent)
         self.ui.minimizeButton.clicked.connect(self.minimizeEvent)
         self.ui.picList.currentItemChanged.connect(self.selectionChanged)
-        #self.ui.vidButton.clicked.connect(self.readVideo)
-        self.ui.picButton.clicked.connect(self.testMeth)
-        #self.mapSingnal.connect(self.displayVideo)
-        #list stuff
-        #for i in range(40):
-        #    self.ui.picList.addItem(str(i))
+        self.ui.vidButton.clicked.connect(self.camThreadControl)
 
         #self.ui.splitter.setStretchFactor(1,0)
         self.ui.splitter.setSizes([500,600])#splitting the splitter's sides??
@@ -66,25 +57,38 @@ class MainWidget(QWidget):
         #file types (add for to support more)
         self.imageEx = ['.png' , '.jpg']
         self.videoEx = ['.mp4' , '.avi']
-    def testMeth(self):
-        print("len ", len(self.codeList))
-        for obj in self.codeList:
-            print( obj.code )
+    def camThreadControl(self, image):
+        if self.vidIsOpen==True:
+            self.vidIsOpen=False
+            self.thread.stop()
+            return
+        self.vidIsOpen= True
+        # create the video capture thread
+        self.thread = vidThread()
+        # connect its signal to the update_image slot
+        self.thread.pixmap_signal.connect(self.startCamVid)
+        # start the thread
+        self.thread.start()
+    def startCamVid(self, cv_img):
+        """Updates the label with a new opencv image"""
+        image = QImage(cv_img, cv_img.shape[1], cv_img.shape[0], QImage.Format_BGR888)
+        pixmap = QPixmap.fromImage(image)#converting normal frame to something qt can read
+        self.ui.picDisplayer.setPixmap(pixmap)
     def decodeDisVid(self, path):
-        """decode and display video"""
+        """decode and display video inside main window"""
         print("vid")
         cap = cv2.VideoCapture(path)
         while(cap.isOpened()):
             ret, frame = cap.read()
-            if ret == False:
+            if ret == False:#preventing frame crash?
                 break
             image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
-            pixmap = QPixmap.fromImage(image)
+            pixmap = QPixmap.fromImage(image)#converting normal frame to something qt can read
             self.ui.picDisplayer.setPixmap(pixmap)
             if cv2.waitKey(1) & 0xFF == ord('q'):#change waitKey val to slow down?
               break
             barcodes = pyzbar.decode(frame)
-            for barcode in barcodes:
+            for barcode in barcodes:#one frame can contains many barcodes
                barcodeData = barcode.data.decode("utf-8")
                barcodeType = barcode.type
                text = "{} ({})".format(barcodeData, barcodeType)
@@ -179,6 +183,23 @@ class MainWidget(QWidget):
         self.setWindowOpacity(1)
         self.pressed = False
         print("release")
+class vidThread(QThread):
+    pixmap_signal = Signal(np.ndarray)
+    def __init__(self):
+        super().__init__()
+        self.run_flag = True
+    def run(self):
+        # capture from cam
+        cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+        while self.run_flag:
+            ret, cv_img = cap.read()
+            if ret:
+                self.pixmap_signal.emit(cv_img)
+        cap.release()
+
+    def stop(self):
+        self.run_flag = False
+
 class codes:
     def __init__(self, code, type):
         self.code = code

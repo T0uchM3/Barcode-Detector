@@ -149,12 +149,15 @@
             <number>0</number>
            </property>
            <widget class="QWidget" name="page">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="spacing">
-              <number>50</number>
+              <number>15</number>
              </property>
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
@@ -176,32 +179,54 @@
                <property name="font">
                 <font>
                  <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
                 </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton#picButton {
    /*color: rgb(255, 255, 255);*/
    background-color:rgb(255, 255, 255);
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
 }
 
 QPushButton#picButton:hover {
     background-color: rgb(255, 70, 73);
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
 }
 
 QPushButton#picButton:pressed {
     background-color: rgb(255, 102, 105);
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
 }
 </string>
                </property>
                <property name="text">
-                <string>   Image</string>
+                <string>    Open cam
+    and take 
+    a picture     </string>
                </property>
                <property name="icon">
                 <iconset>
@@ -210,12 +235,22 @@ padding: 10px;
                </property>
                <property name="iconSize">
                 <size>
-                 <width>26</width>
-                 <height>29</height>
+                 <width>52</width>
+                 <height>52</height>
                 </size>
                </property>
                <property name="flat">
                 <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -230,32 +265,49 @@ padding: 10px;
                <property name="font">
                 <font>
                  <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
                 </font>
                </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton#vidButton {
    /*color: rgb(255, 255, 255);*/
    background-color:rgb(255, 255, 255);
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+	color:rgb(70, 70, 70)
 }
 
 QPushButton#vidButton:hover {
     background-color: rgb(255, 70, 73);
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
 }
 
 QPushButton#vidButton:pressed {
     background-color: rgb(255, 102, 105);
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
-padding: 10px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
 }
 </string>
                </property>
                <property name="text">
-                <string>  Video</string>
+                <string>    Open cam
+    and read 
+    from stream</string>
                </property>
                <property name="icon">
                 <iconset>
@@ -264,8 +316,8 @@ padding: 10px;
                </property>
                <property name="iconSize">
                 <size>
-                 <width>26</width>
-                 <height>29</height>
+                 <width>60</width>
+                 <height>60</height>
                 </size>
                </property>
                <property name="flat">
