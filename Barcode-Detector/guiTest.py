@@ -15,7 +15,7 @@ import numpy as np
 
 class MainWidget(QWidget):   
     imageList=[]
-    codeList=[]
+    #codeList=[]
     noneInside = True
     #mapSingnal = Signal(np.ndarray)
     def __init__(self):
@@ -31,7 +31,7 @@ class MainWidget(QWidget):
         self.ui = loader.load(designer_file, self)
         self.center()#position the window in the center
         
-        global codeList
+        #global codeList
         self.codeList = []
         #global imageList
         #self.imageList = QtGui.QDrag(self)
@@ -41,7 +41,7 @@ class MainWidget(QWidget):
         self.ui.closeButton.clicked.connect(self.closeEvent)
         self.ui.minimizeButton.clicked.connect(self.minimizeEvent)
         self.ui.picList.currentItemChanged.connect(self.selectionChanged)
-        self.ui.vidButton.clicked.connect(self.readVideo)
+        #self.ui.vidButton.clicked.connect(self.readVideo)
         self.ui.picButton.clicked.connect(self.testMeth)
         #self.mapSingnal.connect(self.displayVideo)
         #list stuff
@@ -62,46 +62,33 @@ class MainWidget(QWidget):
 
         self.setMouseTracking(True)  # Set widget mouse tracking
         self.pressed = False
-        
+
+        #file types (add for to support more)
+        self.imageEx = ['.png' , '.jpg']
+        self.videoEx = ['.mp4' , '.avi']
     def testMeth(self):
         print("len ", len(self.codeList))
         for obj in self.codeList:
             print( obj.code )
-    def displayVideo(self, image):
-        print("displayVid")
-        pixmap = QPixmap.fromImage(image)
-        self.ui.picDisplayer.setPixmap(pixmap)
-
-        #barcodes = zbar.decode(image)
-
-        #barcodes = pyzbar.decode(image)
-        #for barcode in barcodes:
-        #   barcodeData = barcode.data.decode("utf-8")
-        #   barcodeType = barcode.type
-        #   text = "{} ({})".format(barcodeData, barcodeType)
-        #   print(text)
-
-            #print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
-        #image2 = cv2.imread(image)
-        #barcode = zbar.decode(image2)
-        #print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
-    def readVideo(self):
-        cap = cv2.VideoCapture('barcodeVid2.mp4')
+    def decodeDisVid(self, path):
+        """decode and display video"""
+        print("vid")
+        cap = cv2.VideoCapture(path)
         while(cap.isOpened()):
             ret, frame = cap.read()
             if ret == False:
                 break
-            #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            #cv2.imshow('frame',frame)
-            #self.mapSingnal.emit(frame)
             image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
-            #self.displayVideo(image)
+            pixmap = QPixmap.fromImage(image)
+            self.ui.picDisplayer.setPixmap(pixmap)
+            if cv2.waitKey(1) & 0xFF == ord('q'):#change waitKey val to slow down?
+              break
             barcodes = pyzbar.decode(frame)
             for barcode in barcodes:
                barcodeData = barcode.data.decode("utf-8")
                barcodeType = barcode.type
                text = "{} ({})".format(barcodeData, barcodeType)
-               print(text)
+               #print(text)
                for obj in self.codeList:
                    if obj.code == barcodeData:
                        self.noneInside=False
@@ -109,28 +96,34 @@ class MainWidget(QWidget):
                        self.noneInside=True
                if self.noneInside:
                    self.codeList.append( codes(barcodeData,barcodeType) )
-               
-               
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        for obj in self.codeList:
+            print( obj.code )
         cap.release()
         cv2.destroyAllWindows()
+    def decodeDisPic(self, path):
+        """decode and display images"""
+        print("pic")
+        pixmap = QtGui.QPixmap(path)
+        self.ui.picDisplayer.setPixmap(pixmap)
+        print(self.ui.picList.currentItem().text())
+        print(path)
+        image = cv2.imread(path)
+        barcode = zbar.decode(image)
+        print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
+
     def selectionChanged(self):
         """ Detect item selection change inside the UI list """
-        for str in self.imageList:
-            if self.ui.picList.currentItem().text() in str:
-                pixmap = QtGui.QPixmap(str)
-                self.ui.picDisplayer.setPixmap(pixmap)
-                print(self.ui.picList.currentItem().text())
-                print(str)
-         #for url in self.imageList.mimeData().urls():
-            #print("select", self.ui.picList.currentItem().text())
-            
-            #print(str(url.toLcalFile()))
-                image = cv2.imread(str)
-                barcode = zbar.decode(image)
-                print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
+        selected = self.ui.picList.currentItem().text()
+        for path in self.imageList:
+            #imageList contains the paths of all files in ui list
+            #and the ui list selection only gives the name of what's selected
+            #so we retrieve the path of what's currently selected in ui list
+            if selected in path:
+                extension = os.path.splitext(selected)[1]
+                if (extension in self.imageEx):
+                    self.decodeDisPic(path)
+                if (extension in self.videoEx):
+                    self.decodeDisVid(path)
     def dragEnterEvent(self, e):
         """
         This function will detect the drag enter event from the mouse on the main window
