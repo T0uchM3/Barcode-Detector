@@ -148,7 +148,7 @@
            <property name="currentIndex">
             <number>0</number>
            </property>
-           <widget class="QWidget" name="page">
+           <widget class="QWidget" name="mainPage">
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
@@ -327,41 +327,185 @@ padding-right: 10px;
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_2">
+           <widget class="QWidget" name="stopPage">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="leftMargin">
+              <number>120</number>
+             </property>
+             <property name="rightMargin">
+              <number>120</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="stopButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>25</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton#stopButton {
+   /*color: rgb(255, 255, 255);*/
+   background-color:rgb(255, 255, 255);
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
+
+QPushButton#stopButton:hover {
+    background-color: rgb(255, 70, 73);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
+
+QPushButton#stopButton:pressed {
+    background-color: rgb(255, 102, 105);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
+</string>
+               </property>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>52</width>
+                 <height>52</height>
+                </size>
+               </property>
+               <property name="autoDefault">
+                <bool>false</bool>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="capPage">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="leftMargin">
+              <number>120</number>
+             </property>
+             <property name="topMargin">
+              <number>9</number>
+             </property>
+             <property name="rightMargin">
+              <number>120</number>
+             </property>
              <item>
-              <widget class="QPushButton" name="pushButton_5">
-               <property name="text">
-                <string>PushButton</string>
+              <widget class="QPushButton" name="capButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>../../../../Desktop/camera.png</normalon>
-                </iconset>
+               <property name="font">
+                <font>
+                 <pointsize>25</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_4">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
                <property name="styleSheet">
-                <string notr="true">font: 9pt &quot;Isoline&quot;;
+                <string notr="true">QPushButton#capButton {
+   /*color: rgb(255, 255, 255);*/
+   background-color:rgb(255, 255, 255);
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
 
-border-color: rgb(0, 0, 0);
+QPushButton#capButton:hover {
+    background-color: rgb(255, 70, 73);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
 
-background-color: rgb(123, 139, 111);
-
-color: rgb(255, 255, 255);
-border-top-left-radius: 8px;
-border-bottom-left-radius: 8px;
-/*border-radius: 10px;
-*/
-padding: 8;</string>
+QPushButton#capButton:pressed {
+    background-color: rgb(255, 102, 105);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+/*padding: 10px;*/
+padding-left: 5px;
+padding-top: 10px;
+padding-bottom: 10px;
+padding-right: 10px;
+color:rgb(70, 70, 70);
+}
+</string>
                </property>
                <property name="text">
-                <string>PushButton</string>
+                <string>CAPTURE</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>52</width>
+                 <height>52</height>
+                </size>
+               </property>
+               <property name="autoDefault">
+                <bool>false</bool>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -545,7 +689,7 @@ padding: 10px;
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>70</height>
+           <height>80</height>
           </size>
          </property>
          <property name="readOnly">
@@ -560,7 +704,7 @@ padding: 10px;
         <widget class="QWidget" name="topBar" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="topMargin">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
            <number>10</number>
@@ -615,8 +759,8 @@ padding: 10px;
             </property>
             <property name="iconSize">
              <size>
-              <width>16</width>
-              <height>16</height>
+              <width>13</width>
+              <height>13</height>
              </size>
             </property>
             <property name="flat">
@@ -658,8 +802,8 @@ padding: 10px;
             </property>
             <property name="iconSize">
              <size>
-              <width>16</width>
-              <height>16</height>
+              <width>13</width>
+              <height>13</height>
              </size>
             </property>
             <property name="flat">

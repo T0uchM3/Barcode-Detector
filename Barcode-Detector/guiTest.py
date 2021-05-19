@@ -1,6 +1,7 @@
 import sys
 import os
 import cv2
+import datetime
 from PySide2.QtWidgets import QApplication, QWidget
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtUiTools import QUiLoader
@@ -13,12 +14,12 @@ from pyzbar import pyzbar
 import pyzbar.pyzbar as zbar
 import numpy as np
 
-class MainWidget(QWidget):   
+class MainWidget(QWidget):
     imageList=[]
     codeList=[]
     noneInside = True
     vidIsOpen = False
-
+    capture = False
     #mapSingnal = Signal(np.ndarray)
     def __init__(self):
         QWidget.__init__(self)
@@ -37,8 +38,11 @@ class MainWidget(QWidget):
         self.ui.closeButton.clicked.connect(self.closeEvent)
         self.ui.minimizeButton.clicked.connect(self.minimizeEvent)
         self.ui.picList.currentItemChanged.connect(self.selectionChanged)
-        self.ui.vidButton.clicked.connect(self.camThreadControl)
-
+        self.ui.vidButton.clicked.connect(self.vidThreadControl)
+        self.ui.stopButton.clicked.connect(self.vidThreadControl)
+        self.ui.picButton.clicked.connect(self.imgThreadControl)
+        self.ui.capButton.clicked.connect(self.imgThreadControl)
+        self.ui.clearButton.clicked.connect(self.clearDisplay)
         #self.ui.splitter.setStretchFactor(1,0)
         self.ui.splitter.setSizes([500,600])#splitting the splitter's sides??
 
@@ -57,64 +61,69 @@ class MainWidget(QWidget):
         #file types (add for to support more)
         self.imageEx = ['.png' , '.jpg']
         self.videoEx = ['.mp4' , '.avi']
-    def camThreadControl(self, image):
+    def addCaptured(self, img_name):
+        """this get executed from vidThread class""" 
+        self.ui.picList.addItem(str(os.path.basename(img_name)))
+        print("path",img_name)
+        self.imageList.append(img_name)
+        self.ui.picDisplayer.clear()
+    def clearDisplay(self):
+        """clear the label, list, and the other list"""
+        self.ui.picList.clear()
+        self.ui.picDisplayer.clear()
+        self.imageList.clear()
+        print("clear")
+    def imgThreadControl(self):
+        print("image")
+        if self.capture ==True:
+            print("FFFFF")
+            self.thread.cap=True
+            self.capture=False
+            self.thread.stop()
+            self.ui.stackedWidget.setCurrentIndex(0)
+            return
+        self.ui.stackedWidget.setCurrentIndex(2)
+        self.capture =True
+        self.thread = vidThread("", self.ui, True, False, self)
+        # start the thread
+        self.thread.start()
+    def vidThreadControl(self, image):
         if self.vidIsOpen==True:
             self.vidIsOpen=False
             self.thread.stop()
+            self.ui.stackedWidget.setCurrentIndex(0)
             return
         self.vidIsOpen= True
+        self.ui.stackedWidget.setCurrentIndex(1)
         # create the video capture thread
-        self.thread = vidThread()
-        # connect its signal to the update_image slot
-        self.thread.pixmap_signal.connect(self.startCamVid)
+        self.thread = vidThread("", self.ui, False, False, self)
         # start the thread
         self.thread.start()
-    def startCamVid(self, cv_img):
-        """Updates the label with a new opencv image"""
-        image = QImage(cv_img, cv_img.shape[1], cv_img.shape[0], QImage.Format_BGR888)
-        pixmap = QPixmap.fromImage(image)#converting normal frame to something qt can read
-        self.ui.picDisplayer.setPixmap(pixmap)
-    def decodeDisVid(self, path):
+
+    def localVidThreadControl(self, path):
         """decode and display video inside main window"""
-        print("vid")
-        cap = cv2.VideoCapture(path)
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == False:#preventing frame crash?
-                break
-            image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
-            pixmap = QPixmap.fromImage(image)#converting normal frame to something qt can read
-            self.ui.picDisplayer.setPixmap(pixmap)
-            if cv2.waitKey(1) & 0xFF == ord('q'):#change waitKey val to slow down?
-              break
-            barcodes = pyzbar.decode(frame)
-            for barcode in barcodes:#one frame can contains many barcodes
-               barcodeData = barcode.data.decode("utf-8")
-               barcodeType = barcode.type
-               text = "{} ({})".format(barcodeData, barcodeType)
-               #print(text)
-               for obj in self.codeList:
-                   if obj.code == barcodeData:
-                       self.noneInside=False
-                   else:
-                       self.noneInside=True
-               if self.noneInside:
-                   self.codeList.append( codes(barcodeData,barcodeType) )
-        for obj in self.codeList:
-            print( obj.code )
-        cap.release()
-        cv2.destroyAllWindows()
+        self.threadLocal = vidThread(path, self.ui, False, False, self)
+        self.threadLocal.pixmap_signal.connect(self.startCamVid)
+        self.threadLocal.start()
+
     def decodeDisPic(self, path):
         """decode and display images"""
         print("pic")
-        pixmap = QtGui.QPixmap(path)
-        self.ui.picDisplayer.setPixmap(pixmap)
+        #pixmap = QtGui.QPixmap(path)
         print(self.ui.picList.currentItem().text())
         print(path)
         image = cv2.imread(path)
-        barcode = zbar.decode(image)
-        print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
+        
 
+        barcode = zbar.decode(image)
+        for obj in barcode:
+            #print('ZBar: {}'.format(barcode[0].data.decode("utf-8")))
+            print(obj.data)
+            (x, y, w, h) = obj.rect
+            cv2.rectangle(image, (x, y), (x + w, y + h),(0, 255, 0), 3)
+        image2 = QImage(image, image.shape[1], image.shape[0], image.strides[0], QImage.Format_BGR888)
+        pixmap = QPixmap.fromImage(image2)
+        self.ui.picDisplayer.setPixmap(pixmap)
     def selectionChanged(self):
         """ Detect item selection change inside the UI list """
         selected = self.ui.picList.currentItem().text()
@@ -127,7 +136,7 @@ class MainWidget(QWidget):
                 if (extension in self.imageEx):
                     self.decodeDisPic(path)
                 if (extension in self.videoEx):
-                    self.decodeDisVid(path)
+                    self.localVidThreadControl(path)
     def dragEnterEvent(self, e):
         """
         This function will detect the drag enter event from the mouse on the main window
@@ -163,10 +172,11 @@ class MainWidget(QWidget):
         self.showMinimized()
 
     def center(self):
-          screen = QtGui.QGuiApplication.screenAt(QtGui.QCursor().pos())
-          x = screen.geometry().center().x()-200
-          y = screen.geometry().center().y()-200
-          self.move(x - self.geometry().width()/2, y - self.geometry().height()/2)
+        """make sure the window in the middle of the screen?"""
+        screen = QtGui.QGuiApplication.screenAt(QtGui.QCursor().pos())
+        x = screen.geometry().center().x()-200
+        y = screen.geometry().center().y()-200
+        self.move(x - self.geometry().width()/2, y - self.geometry().height()/2)
 
     def mousePressEvent(self, event):
         self.oldPos = event.globalPos()
@@ -185,20 +195,66 @@ class MainWidget(QWidget):
         print("release")
 class vidThread(QThread):
     pixmap_signal = Signal(np.ndarray)
-    def __init__(self):
+    codeList=[]
+    noneInside = True
+    
+    def __init__(self, path, ui, image, cap, parent):
         super().__init__()
+        self.parent = parent
+        self.path = path
+        self.ui = ui
+        self.img=image
+        self.cap=cap
         self.run_flag = True
     def run(self):
+        if len(self.path)>0:
+            cap = cv2.VideoCapture(self.path)
+        else:
+            cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
         # capture from cam
-        cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
         while self.run_flag:
             ret, cv_img = cap.read()
-            if ret:
-                self.pixmap_signal.emit(cv_img)
-        cap.release()
+            if ret == False:#preventing frame crash?
+                break
+            
+            #if self.img==False:
+            barcodes = pyzbar.decode(cv_img)
+            for barcode in barcodes:#one frame can contains many barcodes
+                self.demoCode = barcode
+                barcodeData = barcode.data.decode("utf-8")
+                barcodeType = barcode.type
 
+                (x, y, w, h) = barcode.rect
+                cv2.rectangle(cv_img, (x, y), (x + w, y + h),(0, 255, 0), 3)
+                for obj in self.codeList:#we considering codeList a list of object "Code"
+                    if obj.code == barcodeData:#so we compare class "Code" .code to the current barcode
+                        self.noneInside=False
+                    else:
+                        self.noneInside=True
+                if self.noneInside:
+                    self.codeList.append( codes(barcodeData,barcodeType) )
+                    print( barcodeData )
+            if cv2.waitKey(1) & 0xFF == ord('q'):#change waitKey val to slow down?
+                break
+            #else:
+            if self.cap == True:
+                print(datetime.datetime.now())
+                dateString = datetime.datetime.now().strftime("%I%M%S%d%Y")
+                img_name = "opencv_{}.png".format(dateString)
+                print(type(dateString))
+                cv2.imwrite(img_name, cv_img)
+                self.parent.addCaptured(img_name)
+                self.cap = False
+
+            image2 = QImage(cv_img, cv_img.shape[1], cv_img.shape[0], cv_img.strides[0], QImage.Format_BGR888)
+            pixmap = QPixmap.fromImage(image2)
+            self.ui.picDisplayer.setPixmap(pixmap)
+
+        cap.release()
+        self.ui.picDisplayer.clear()
     def stop(self):
         self.run_flag = False
+        
 
 class codes:
     def __init__(self, code, type):
