@@ -13,7 +13,9 @@ from PySide2.QtWidgets import *
 from pyzbar import pyzbar
 import pyzbar.pyzbar as zbar
 import numpy as np
+import resources_rc
 
+from PySide2.QtXml import QDomNode #tomakepyinstallerwork?
 class MainWidget(QWidget):
     imageList = []
     codeList = []

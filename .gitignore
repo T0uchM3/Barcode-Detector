@@ -362,3 +362,17 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 Barcode-Detector/guiTest\.py
+
+Barcode-Detector/Barcode_Detector\.spec
+
+Barcode-Detector/libiconv\.dll
+
+Barcode-Detector/libzbar-64\.dll
+
+Barcode-Detector/resources_rc\.py
+
+Barcode-Detector/resources\.qrc
+
+libzbar-64\.dll
+
+libiconv\.dll

@@ -242,7 +242,7 @@ color:rgb(70, 70, 70);
                </property>
                <property name="icon">
                 <iconset>
-                 <normalon>../../../../Desktop/photo-camera graay.png</normalon>
+                 <normalon>:/icon/img/phCam.png</normalon>
                 </iconset>
                </property>
                <property name="iconSize">
@@ -321,7 +321,7 @@ padding-right: 10px;
                </property>
                <property name="icon">
                 <iconset>
-                 <normalon>../../../../Desktop/video-camera graaay.png</normalon>
+                 <normalon>:/icon/img/viCam.png</normalon>
                 </iconset>
                </property>
                <property name="iconSize">
@@ -633,7 +633,7 @@ color:rgb(70, 70, 70);*/
                </property>
                <property name="icon">
                 <iconset>
-                 <normalon>../../../../Desktop/minus RED.png</normalon>
+                 <normalon>:/icon/img/min.png</normalon>
                 </iconset>
                </property>
                <property name="iconSize">
@@ -940,7 +940,7 @@ padding: 10px;
             </property>
             <property name="icon">
              <iconset>
-              <normalon>../../../../Desktop/minus-sign.png</normalon>
+              <normalon>:/icon/img/abort.png</normalon>
              </iconset>
             </property>
             <property name="iconSize">
@@ -983,7 +983,7 @@ padding: 10px;
             </property>
             <property name="icon">
              <iconset>
-              <normalon>../../../../Desktop/cancel (1).png</normalon>
+              <normalon>:/icon/img/cancel.png</normalon>
              </iconset>
             </property>
             <property name="iconSize">
@@ -1006,6 +1006,8 @@ padding: 10px;
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
