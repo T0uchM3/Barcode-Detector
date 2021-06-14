@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>16c8dee5-6b5a-4c71-aa07-5b6d12481f7e</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>guiTest.py</StartupFile>
+    <StartupFile>Barcode_Detector.py</StartupFile>
     <SearchPath>..\Barcode-Detector</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
