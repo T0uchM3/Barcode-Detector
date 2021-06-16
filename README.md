@@ -1,4 +1,4 @@
-#Qr/Bar-code decoder
+# Qr/Bar-code decoder
 
 Supports local images/videos, images from cam and live decoding.
 
